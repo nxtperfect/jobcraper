@@ -2,6 +2,7 @@ from requests import Session
 from random import choice
 from bs4 import BeautifulSoup
 import lxml
+import cchardet
 
 PROXIES = [
         "143.110.226.180:8888",

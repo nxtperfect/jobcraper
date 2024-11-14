@@ -1,6 +1,5 @@
-import cchardet
-from db import Database, Offer
-from scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession, updateSessionUserAgentAndProxy
+from src.db import Database, Offer
+from src.scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession, updateSessionUserAgentAndProxy
 from os import environ
 from dotenv import load_dotenv 
 
@@ -20,13 +19,13 @@ class PracujOffer(Offer):
     def __init__(self, offer):
         super().__init__(offer)
         try:
-            self.date_added = offer.find_next('p').get_text().split(': ')[1]
-            self.title = offer.find_next('h2').get_text()
-            self.by_company = offer.find_next(class_="tiles_c639tii").get_text()
-            self.city = offer.select('h4[data-test="text-region"]')[0].get_text()
-            self.additional_info = [x.get_text() for x in offer.select('li[data-test^=offer-additional-info-]')]
-            self.technologies = [x.get_text() for x in offer.select('span[data-test="technologies-item"]')]
-            self.link = offer.select('a[data-test="link-offer"]')[0]['href']
+            self.date_added = offer.find_next('p').get_text().split(': ')[1].strip()
+            self.title = offer.find_next('h2').get_text().strip()
+            self.by_company = offer.find_next(class_="tiles_c639tii").get_text().strip()
+            self.city = offer.select('h4[data-test="text-region"]')[0].get_text().strip()
+            self.additional_info = [x.get_text().strip() for x in offer.select('li[data-test^=offer-additional-info-]')]
+            self.technologies = [x.get_text().strip() for x in offer.select('span[data-test="technologies-item"]')]
+            self.link = offer.select('a[data-test="link-offer"]')[0]['href'].strip()
             self.calculateAndAssignHash()
         except Exception as e:
             print(f"Failed to add new offer {e}")
@@ -57,7 +56,7 @@ def runPracuj():
         for i, offer in enumerate(offers[:-1]):
             newOffer = PracujOffer(offer)
             print("Last inserted row:", db.insertNewOffer(newOffer))
-    db.selectAllOffers()
+    # db.selectAllOffers()
 
 def getMaxOffers(session):
     url = str(environ.get("PRACUJ_URL"))
@@ -66,4 +65,20 @@ def getMaxOffers(session):
     max_offers = parsedResponse.select(f'span[data-test={PAGINATION_MAX_OFFER_NUMBER}]')[0].get_text()
     return max_offers
 
-runPracuj()
+def insertNewOfferFromUrl(session):
+    session = updateSessionUserAgentAndProxy(session)
+    url = str(environ.get("PRACUJ_URL")) + str(environ.get("PRACUJ_PAGINATION")) + str(i)
+    try:
+        response = fetchWebsite(session, url)
+    except Exception as e:
+        print(f"Couldn't fetch url {url} with session {session}", e)
+        return
+    parsedResponse = returnBeautifulSoupedHTML(response.content)
+    offers = parsedResponse.find_all(class_=OFFER_CLASS)
+    for i, offer in enumerate(offers[:-1]):
+        newOffer = PracujOffer(offer)
+        print("Last inserted row:", db.insertNewOffer(newOffer))
+
+
+if __name__ == "__main__":
+    runPracuj()

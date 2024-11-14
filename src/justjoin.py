@@ -1,10 +1,5 @@
-"""
-justjoin.it
-"""
-
-from db import Database, Offer
-from pracuj import ALL_OFFERS_LIST_DATA
-from scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession, updateSessionUserAgentAndProxy
+from src.db import Database, Offer
+from src.scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession
 from os import environ
 
 ALL_OFFERS_CLASS = "virtuoso-item-list" # data-test-id
@@ -19,14 +14,14 @@ class JustJoinOffer(Offer):
         super().__init__(offer)
         try:
             self.date_added = "01-01-1990"
-            self.title = offer.find_next('h3').get_text()
+            self.title = offer.find_next('h3').get_text().strip()
             additional_info = offer.find_next(class_=ADDITIONAL_INFORMATION_CLASS)
 
-            self.by_company = additional_info[0].get_text()
-            self.city = additional_info[1].get_text()
-            self.additional_info = [x.get_text() for x in additional_info[2:]]
-            self.technologies = [x.find_next('div').find_next('div').get_text() for x in offer.select(f'div[class^="{TECHNOLOGY_CLASS}"]')]
-            self.link = offer.find_next('a')[0]['href']
+            self.by_company = additional_info[0].get_text().strip()
+            self.city = additional_info[1].get_text().strip()
+            self.additional_info = [x.get_text().strip() for x in additional_info[2:]]
+            self.technologies = [x.find_next('div').find_next('div').get_text().strip() for x in offer.select(f'div[class^="{TECHNOLOGY_CLASS}"]')]
+            self.link = offer.find_next('a')[0]['href'].strip()
             self.calculateAndAssignHash()
         except Exception as e:
             print(f"Failed to add new offer {e}")
@@ -44,9 +39,10 @@ def runJustJoin():
     offers = parsedResponse.select(f"div[{OFFER_CLASS}]")
 
     for offer in offers:
-        print(offer)
+        # print(offer)
         newOffer = JustJoinOffer(offer)
         print("Last inserted row:", db.insertNewOffer(newOffer))
     # db.selectAllOffers()
 
-runJustJoin()
+if __name__ == "__main__":
+    runJustJoin()

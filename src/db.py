@@ -42,7 +42,7 @@ class Database:
     def connect(self):
         self.conn = sqlite3.connect(str(environ.get("DATABASE_PATH")))
     def __init__(self):
-        print(environ.get("DATABASE_PATH"))
+        # print(environ.get("DATABASE_PATH"))
         self.connect()
         try:
             with self.conn:
