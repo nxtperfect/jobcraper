@@ -2,6 +2,7 @@ from src.db import Database, Offer
 from src.scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession, updateSessionUserAgentAndProxy
 from os import environ
 from dotenv import load_dotenv 
+from threading import Thread
 
 load_dotenv()
 
@@ -44,18 +45,7 @@ def runPracuj():
         return
 
     for i in range(1, MAX_OFFERS):
-        session = updateSessionUserAgentAndProxy(session)
-        url = str(environ.get("PRACUJ_URL")) + str(environ.get("PRACUJ_PAGINATION")) + str(i)
-        try:
-            response = fetchWebsite(session, url)
-        except Exception as e:
-            print(f"Couldn't fetch url {url} with session {session}", e)
-            continue
-        parsedResponse = returnBeautifulSoupedHTML(response.content)
-        offers = parsedResponse.find_all(class_=OFFER_CLASS)
-        for i, offer in enumerate(offers[:-1]):
-            newOffer = PracujOffer(offer)
-            print("Last inserted row:", db.insertNewOffer(newOffer))
+        Thread(target=insertNewOfferFromList,args=(session, db, i,)).start()
     # db.selectAllOffers()
 
 def getMaxOffers(session):
@@ -65,7 +55,7 @@ def getMaxOffers(session):
     max_offers = parsedResponse.select(f'span[data-test={PAGINATION_MAX_OFFER_NUMBER}]')[0].get_text()
     return max_offers
 
-def insertNewOfferFromUrl(session):
+def insertNewOfferFromList(session, db, i):
     session = updateSessionUserAgentAndProxy(session)
     url = str(environ.get("PRACUJ_URL")) + str(environ.get("PRACUJ_PAGINATION")) + str(i)
     try:
@@ -77,7 +67,8 @@ def insertNewOfferFromUrl(session):
     offers = parsedResponse.find_all(class_=OFFER_CLASS)
     for i, offer in enumerate(offers[:-1]):
         newOffer = PracujOffer(offer)
-        print("Last inserted row:", db.insertNewOffer(newOffer))
+        lastRow = db.insertNewOffer(newOffer)
+        # print("Last inserted row:", lastRow)
 
 
 if __name__ == "__main__":

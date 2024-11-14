@@ -1,6 +1,7 @@
 from src.db import Database, Offer
 from src.scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession
 from os import environ
+from threading import Thread
 
 ALL_OFFERS_CLASS = "virtuoso-item-list" # data-test-id
 OFFER_CLASS = "data-item-index" # name of attribute
@@ -39,10 +40,13 @@ def runJustJoin():
     offers = parsedResponse.select(f"div[{OFFER_CLASS}]")
 
     for offer in offers:
-        # print(offer)
-        newOffer = JustJoinOffer(offer)
-        print("Last inserted row:", db.insertNewOffer(newOffer))
+        Thread(target=insertNewOfferFromList,args=(offer, db,)).start()
     # db.selectAllOffers()
+
+def insertNewOfferFromList(offer, db):
+    newOffer = JustJoinOffer(offer)
+    lastRow = db.insertNewOffer(newOffer)
+    # print("Last inserted row:", lastRow)
 
 if __name__ == "__main__":
     runJustJoin()

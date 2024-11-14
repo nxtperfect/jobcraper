@@ -1,6 +1,7 @@
 from src.db import Database, Offer
 from src.scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession
 from os import environ
+from threading import Thread
 
 OFFER_CLASS = "JobListItem_item__fYh8y" # ae
 TITLE_CLASS = "JobListItem_item__title__278xz" # h3v
@@ -40,10 +41,14 @@ def runBulldogJob():
     offers = containerDivs[0].select('div[class="container"]')[0].find_all('a')
 
     for offer in offers:
-        newOffer = NoFluffJobsOffer(offer)
-        # print("New offer:", newOffer.print())
-        print("Last inserted row:", db.insertNewOffer(newOffer))
+        Thread(target=insertNewOfferFromList,args=(offer, db,)).start()
     # db.selectAllOffers()
+
+def insertNewOfferFromList(offer, db):
+    newOffer = NoFluffJobsOffer(offer)
+    lastRow = db.insertNewOffer(newOffer)
+    # print("New offer:", newOffer.print())
+    print("Last inserted row:", lastRow)
 
 if __name__ == "__main__":
     runBulldogJob()

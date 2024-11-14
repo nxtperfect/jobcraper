@@ -1,6 +1,7 @@
 from src.db import Database, Offer
 from src.scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession
 from os import environ
+from threading import Thread
 
 ALL_OFFERS_CLASS = "list-container" # div
 TECHNOLOGIES_LIST_CLASS = "tiles-container" # div
@@ -36,10 +37,13 @@ def runNoFluffJobs():
     offers = [y for x in twoOffersLists for y in x.find_all_next('a')]
 
     for offer in offers:
-        newOffer = NoFluffJobsOffer(offer)
-        # print("New offer title:", newOffer.title)
-        print("Last inserted row:", db.insertNewOffer(newOffer))
+        Thread(target=insertNewOfferFromList,args=(offer, db,)).start()
     # db.selectAllOffers()
+
+def insertNewOfferFromList(offer, db):
+    newOffer = NoFluffJobsOffer(offer)
+    lastRow = db.insertNewOffer(newOffer)
+    # print("Last inserted row:", lastRow)
 
 if __name__ == "__main__":
     runNoFluffJobs()
