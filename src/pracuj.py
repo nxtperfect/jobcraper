@@ -68,7 +68,6 @@ def insertNewOfferFromList(session, db, i):
     for i, offer in enumerate(offers[:-1]):
         newOffer = PracujOffer(offer)
         lastRow = db.insertNewOffer(newOffer)
-        # print("Last inserted row:", lastRow)
 
 
 if __name__ == "__main__":

@@ -42,7 +42,6 @@ class Database:
     def connect(self):
         self.conn = sqlite3.connect(str(environ.get("DATABASE_PATH")))
     def __init__(self):
-        # print(environ.get("DATABASE_PATH"))
         self.connect()
         try:
             with self.conn:
@@ -99,3 +98,15 @@ class Database:
                 print("Total number of rows:", len(rows))
         except Exception as e:
             print(f"Failed to delete table {e}")
+
+    def removeBadLinks(self):
+        remove_statement = "DELETE FROM offers WHERE SUBSTR(link, 1, 1) = '/pl/'"
+        try:
+            with self.conn:
+                print("Removing all badly linked offers...")
+                cursor = self.conn.cursor()
+                cursor.execute(remove_statement)
+                self.conn.commit()
+                print("Successfully removed bad rows.")
+        except Exception as e:
+            print(f"Failed to delete bad linked offers {e}")

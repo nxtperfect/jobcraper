@@ -18,7 +18,7 @@ class NoFluffJobsOffer(Offer):
             self.city = additional_info.find_next('span').get_text().strip()
             self.additional_info = []
             self.technologies = [x.find_next('span').get_text().strip() for x in offer.select(f'div[class^="{TECHNOLOGIES_LIST_CLASS}"]')]
-            self.link = offer['href'].strip()
+            self.link = "https://nofluffjobs.com" + offer['href'].strip()
             self.calculateAndAssignHash()
         except Exception as e:
             print(f"Failed to add new offer {e}")
