@@ -20,7 +20,7 @@ export default function Offer({ title, by_company, city, technologies, additiona
 
   return (
     <>
-      <article className="flex flex-col min-h-[600px] bg-neutral-800 text-neutral-100 p-4 items-center justify-items-end rounded-lg h-full px-4 text-pretty">
+      <article className="flex flex-col min-h-[600px] bg-neutral-800 text-neutral-100 p-4 justify-items-end rounded-lg h-full px-4 text-pretty">
         <header className="leading-10">
           <h2 className="text-xl font-bold text-white">{title}</h2>
           <div className="flex flex-row gap-4 my-2" role="list" aria-label="Job details">
@@ -30,7 +30,7 @@ export default function Offer({ title, by_company, city, technologies, additiona
         </header>
         <div className="flex-grow">
           <span className="text-neutral-300 mb-4">Additional information: <ul className="list-disc list-inside">{additional_info?.split(",").map((info) => <li>{info.trim()}</li>) || <p className="bg-neutral-300 text-neutral-700 rounded-md w-fit px-1">No information</p>}</ul></span>
-          <span className="text-neutral-300 mb-4 flex flex-row flex-wrap gap-2">Technologies: {
+          <span className="text-neutral-300 mt-6 flex flex-row flex-wrap gap-2">Technologies: {
             technologies.length > 1 ? technologies.split(",").map((tech) => <p className="bg-neutral-300 text-neutral-700 rounded-md px-1">{tech}</p>) : <p className="bg-neutral-300 text-neutral-700 rounded-md px-1">No information</p>
           }</span>
         </div>

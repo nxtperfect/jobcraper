@@ -44,9 +44,9 @@ def runPracuj():
         print(f"Failed to get max number of offers, returning {e}")
         return
 
+    # db.removeOffersTable()
     for i in range(1, MAX_OFFERS):
         Thread(target=insertNewOfferFromList,args=(session, db, i,)).start()
-    # db.selectAllOffers()
 
 def getMaxOffers(session):
     url = str(environ.get("PRACUJ_URL"))

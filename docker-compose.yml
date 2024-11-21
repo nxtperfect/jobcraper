@@ -1,0 +1,37 @@
+version: "3"
+
+services: 
+
+  back-end:
+    build: 
+      context: hono
+    container_name: back-end
+    working_dir: /usr/src/app
+    networks: 
+      - node-network
+    volumes: 
+      - ./web/jobcraper_backend:/usr/src/app
+      - /usr/src/app/node_modules
+    tty: true
+    ports: 
+      - "8000:8000"
+    command: deno task start
+
+  front-end:
+    build: 
+      context: react
+    container_name: front-end
+    working_dir: /usr/src/app
+    networks: 
+      - node-network
+    volumes: 
+      - ./web/jobcraper_web:/usr/src/app
+      - /usr/src/app/node_modules
+    tty: true
+    ports: 
+      - "5173:5173"
+    command: deno task dev
+
+networks: 
+  node-network:
+    driver: bridge

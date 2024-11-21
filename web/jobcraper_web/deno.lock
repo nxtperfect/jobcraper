@@ -2,6 +2,7 @@
   "version": "4",
   "specifiers": {
     "npm:@eslint/js@^9.11.1": "9.12.0",
+    "npm:@types/node@^22.9.1": "22.9.1",
     "npm:@types/react-dom@^18.3.0": "18.3.1",
     "npm:@types/react@^18.3.10": "18.3.11",
     "npm:@vitejs/plugin-react@^4.3.2": "4.3.2_vite@5.4.9_@babel+core@7.25.8",
@@ -447,6 +448,12 @@
     },
     "@types/json-schema@7.0.15": {
       "integrity": "sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA=="
+    },
+    "@types/node@22.9.1": {
+      "integrity": "sha512-p8Yy/8sw1caA8CdRIQBG5tiLHmxtQKObCijiAa9Ez+d4+PRffM4054xbju0msf+cvhJpnFEeNjxmVT/0ipktrg==",
+      "dependencies": [
+        "undici-types"
+      ]
     },
     "@types/prop-types@15.7.13": {
       "integrity": "sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA=="
@@ -1545,6 +1552,9 @@
     "typescript@5.6.3": {
       "integrity": "sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw=="
     },
+    "undici-types@6.19.8": {
+      "integrity": "sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw=="
+    },
     "update-browserslist-db@1.1.1_browserslist@4.24.0": {
       "integrity": "sha512-R8UzCaa9Az+38REPiJ1tXlImTJXlVfgHZsglwBD/k6nj76ctsH1E3q4doGrukiLQd3sGQYu56r5+lo5r94l29A==",
       "dependencies": [
@@ -1610,6 +1620,7 @@
     "packageJson": {
       "dependencies": [
         "npm:@eslint/js@^9.11.1",
+        "npm:@types/node@^22.9.1",
         "npm:@types/react-dom@^18.3.0",
         "npm:@types/react@^18.3.10",
         "npm:@vitejs/plugin-react@^4.3.2",

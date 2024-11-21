@@ -8,11 +8,15 @@ type OfferType = {
   link: string
 };
 
-export default function JobOffers({ offers }: any) {
+type JobOffersProps = {
+  offers: Array<OfferType>,
+};
+
+export default function JobOffers({ offers }: JobOffersProps) {
 
   return (
     <>
-      <ul className="grid grid-cols-5 gap-4 px-6">
+      <ul className={`flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 px-6`}>
         {offers.map((offer: OfferType) => {
           return (
             <li>

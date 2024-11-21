@@ -40,7 +40,7 @@ CREATE_TABLE_STATEMENT = """
 
 class Database:
     def connect(self):
-        self.conn = sqlite3.connect(str(environ.get("DATABASE_PATH")))
+        self.conn = sqlite3.connect(str(environ.get("DATABASE_PATH")), check_same_thread=False)
     def __init__(self):
         self.connect()
         try:
@@ -69,7 +69,7 @@ class Database:
             print(f"Failed to insert new offer {e}")
             return -1
 
-    def removeTable(self):
+    def removeOffersTable(self):
         self.connect()
         drop_statement = "DROP TABLE IF EXISTS offers;"
         try:
