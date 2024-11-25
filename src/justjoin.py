@@ -1,3 +1,4 @@
+from time import localtime, strftime
 from src.db import Database, Offer
 from src.scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession
 from os import environ
@@ -14,7 +15,7 @@ class JustJoinOffer(Offer):
     def __init__(self, offer):
         super().__init__(offer)
         try:
-            self.date_added = "01-01-1990"
+            self.last_seen = strftime("%d-%m-%Y", localtime())
             self.title = offer.find_next('h3').get_text().strip()
             additional_info = offer.find_next(class_=ADDITIONAL_INFORMATION_CLASS)
 

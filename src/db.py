@@ -10,7 +10,7 @@ class Offer:
     def __init__(self, offer) -> None:
         self.hashId: str = ""
         self.title: str = ""
-        self.date_added: str = ""
+        self.last_seen: str = ""
         self.by_company: str = ""
         self.city: str = ""
         self.additional_info: list = []
@@ -18,35 +18,36 @@ class Offer:
         self.link: str = ""
 
     def calculateAndAssignHash(self) -> None:
-        hash_str = ' '.join([self.title, self.by_company, self.city, self.date_added])
+        hash_str = ' '.join([self.title, self.by_company, self.city])
         md5 = hashlib.md5()
         md5.update(bytes(hash_str, encoding="utf-8"))
         self.hashId = str(md5.hexdigest())
 
-    def formatToDatabase(self) -> tuple[str, str, str, str, str, LiteralString, LiteralString, str]:
-        return (self.hashId, self.title, self.date_added, self.by_company, self.city, ','.join(self.additional_info), ','.join(self.technologies), self.link)
+    def formatToDatabase(self) -> tuple[str, str, str, str, str, LiteralString, LiteralString, str, int, str, str]:
+        return (self.hashId, self.title, self.last_seen, self.by_company, self.city, ','.join(self.additional_info), ','.join(self.technologies), self.link, 0, "false", self.last_seen)
 
 CREATE_TABLE_STATEMENT = """
                         CREATE TABLE IF NOT EXISTS offers (
                             id text PRIMARY KEY, 
                             title text NOT NULL, 
-                            date_added DATE, 
+                            last_seen DATE, 
                             by_company text,
                             city text,
                             additional_info text,
                             technologies text NOT NULL,
-                            link text NOT NULL
+                            link text NOT NULL,
+                            matching number DEFAULT 0,
+                            is_applied text DEFAULT "false"
                         );"""
 
 class Database:
     def connect(self):
-        self.conn = sqlite3.connect(str(environ.get("DATABASE_PATH")), check_same_thread=False)
+        self.conn = sqlite3.connect(str(environ.get("DATABASE_PATH")), check_same_thread=False, timeout=3)
     def __init__(self):
         self.connect()
         try:
             with self.conn:
                 print("Connected")
-                # self.removeTable()
                 cursor = self.conn.cursor()
                 cursor.execute(CREATE_TABLE_STATEMENT)
                 self.conn.commit()
@@ -56,7 +57,8 @@ class Database:
 
     def insertNewOffer(self, offer: Offer):
         print(f"Inserting new offer with hash {offer.hashId}")
-        insert_statement = "INSERT INTO offers VALUES(?, ?, ?, ?, ?, ?, ?, ?);"
+        insert_statement = """INSERT INTO offers VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                ON CONFLICT(id) DO UPDATE SET last_seen=?;"""
         self.connect()
         try:
             with self.conn:

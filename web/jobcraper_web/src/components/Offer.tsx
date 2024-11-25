@@ -1,13 +1,6 @@
-interface OfferProps {
-  title: string;
-  by_company: string;
-  city: string;
-  technologies: string;
-  additional_info?: string;
-  link: string;
-}
+import { OfferType } from "../App";
 
-export default function Offer({ title, by_company, city, technologies, additional_info, link }: OfferProps) {
+export default function Offer({ title, last_seen, by_company, city, technologies, additional_info, link, matching, is_applied }: OfferType) {
 
   function openInNewTab(url: string) {
     const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
@@ -20,10 +13,14 @@ export default function Offer({ title, by_company, city, technologies, additiona
 
   return (
     <>
-      <article className="flex flex-col min-h-[600px] bg-neutral-800 text-neutral-100 p-4 justify-items-end rounded-lg h-full px-4 text-pretty">
+      <article className="flex flex-col min-h-[600px] bg-neutral-800 text-neutral-100 p-4 rounded-lg h-full px-4 text-pretty">
         <header className="leading-10">
-          <h2 className="text-xl font-bold text-white">{title}</h2>
-          <div className="flex flex-row gap-4 my-2" role="list" aria-label="Job details">
+          <div className="flex flex-row justify-between">
+            <h2 className="text-xl font-bold text-white">{title}</h2>
+            <input className="self-center scale-150 cursor-not-allowed" type="checkbox" value={is_applied} disabled />
+          </div>
+          <span className="tracking-wide text-sm">Last seen: {last_seen}</span>
+          <div className="flex flex-row gap-4 mb-2" role="list" aria-label="Job details">
             <span className="text-neutral-200" role="listitem">🏛️ {by_company}</span>
             <span className="text-neutral-200" role="listitem">📍 {city}</span>
           </div>
@@ -34,8 +31,9 @@ export default function Offer({ title, by_company, city, technologies, additiona
             technologies.length > 1 ? technologies.split(",").map((tech) => <p className="bg-neutral-300 text-neutral-700 rounded-md px-1">{tech}</p>) : <p className="bg-neutral-300 text-neutral-700 rounded-md px-1">No information</p>
           }</span>
         </div>
-        <footer>
+        <footer className="flex flex-row items-center gap-4">
           <a onClick={onClickUrl(link)} className="inline-block px-4 py-2 bg-cyan-600 text-white rounded-md shadow-md hover:bg-blue-500 cursor-pointer" aria-label="View job offer details in new tab">Open in new tab</a>
+          <span>Matches your known technologies in: {matching * 100.0}%</span>
         </footer>
       </article>
     </>

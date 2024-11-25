@@ -2,10 +2,13 @@ import Offer from "./Offer"
 
 type OfferType = {
   title: string,
+  last_seen: string,
   by_company: string,
   city: string,
   technologies: string,
-  link: string
+  link: string,
+  matching: number,
+  is_applied: string
 };
 
 type JobOffersProps = {

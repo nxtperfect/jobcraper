@@ -3,27 +3,7 @@ from random import choice
 from bs4 import BeautifulSoup
 import lxml
 import cchardet
-
-PROXIES = [
-        "143.110.226.180:8888",
-        "200.174.198.86:8888",
-        "14.97.12.186:80",
-        "176.9.239.181:80",
-        "87.98.148.98:80",
-        "51.210.54.186:80",
-        "13.37.59.99:3128",
-        "13.38.176.104:3128",
-        "46.4.94.62:80",
-        "85.215.64.49:80"
-        ]
-
-USER_AGENTS = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0"
-        ]
+from toml import load
 
 def getRandomUserAgent():
     return choice(USER_AGENTS)
@@ -59,3 +39,23 @@ def fetchWebsite(session, url: str):
 def returnBeautifulSoupedHTML(pageContent):
     parsed = BeautifulSoup(pageContent, 'lxml')
     return parsed
+
+def loadProxiesFromConfig():
+    return CONFIG["Scraper"]["PROXIES"]
+
+def loadUserAgentsFromConfig():
+    return CONFIG["Scraper"]["USER_AGENTS"]
+
+def loadTechnologiesFromConfig():
+    return CONFIG["Offers"]["TECHNOLOGIES"]
+    
+def loadConfig(CONFIG_PATH: str):
+    data = load(CONFIG_PATH)
+    return data
+
+CONFIG_PATH = "./config.toml"
+CONFIG = loadConfig(CONFIG_PATH)
+PROXIES = loadProxiesFromConfig()
+USER_AGENTS = loadUserAgentsFromConfig()
+TECHNOLOGIES = loadTechnologiesFromConfig()
+

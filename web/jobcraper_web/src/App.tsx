@@ -3,12 +3,16 @@ import JobOffers from "./components/JobOffers"
 import Filters from "./components/Filters";
 import Pagination from "./components/Pagination";
 
-type OfferType = {
-  title: string,
-  by_company: string,
-  city: string,
-  technologies: string,
-  link: string
+export type OfferType = {
+  title: string;
+  last_seen: string;
+  by_company: string;
+  city: string;
+  technologies: string;
+  additional_info?: string;
+  link: string;
+  matching: number;
+  is_applied: number;
 };
 
 export type ActiveFilter = {
@@ -73,9 +77,9 @@ function App() {
   return (
     <main className="bg-neutral-100 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100">
       {process.env.REACT_APP_FEATURE_FLAG_FILTERS === "true" ? <Filters cities={cities} companies={companies} technologies={technologies} handleUpdatingFilters={handleUpdatingFilters} /> : null}
-      <Pagination maxPages={Math.floor(filteredOffers.length / offersPerPage)} pageIndex={pageIndex} setPageIndex={setPageIndex} offersPerPage={offersPerPage} setOffersPerPage={setOffersPerPage} />
+      <Pagination maxPages={Math.ceil(filteredOffers.length / offersPerPage)} pageIndex={pageIndex} setPageIndex={setPageIndex} offersPerPage={offersPerPage} setOffersPerPage={setOffersPerPage} />
       <JobOffers offers={filteredOffers.slice((pageIndex - 1) * offersPerPage, (pageIndex) * offersPerPage)} />
-      <Pagination maxPages={Math.floor(filteredOffers.length / offersPerPage)} pageIndex={pageIndex} setPageIndex={setPageIndex} offersPerPage={offersPerPage} setOffersPerPage={setOffersPerPage} />
+      <Pagination maxPages={Math.ceil(filteredOffers.length / offersPerPage)} pageIndex={pageIndex} setPageIndex={setPageIndex} offersPerPage={offersPerPage} setOffersPerPage={setOffersPerPage} />
     </main>
   )
 }

@@ -1,3 +1,4 @@
+from time import localtime, strftime
 from src.db import Database, Offer
 from src.scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession, updateSessionUserAgentAndProxy
 from os import environ
@@ -20,7 +21,7 @@ class PracujOffer(Offer):
     def __init__(self, offer):
         super().__init__(offer)
         try:
-            self.date_added = offer.find_next('p').get_text().split(': ')[1].strip()
+            self.last_seen = strftime("%d-%m-%Y", localtime())
             self.title = offer.find_next('h2').get_text().strip()
             self.by_company = offer.find_next(class_="tiles_c639tii").get_text().strip()
             self.city = offer.select('h4[data-test="text-region"]')[0].get_text().strip()

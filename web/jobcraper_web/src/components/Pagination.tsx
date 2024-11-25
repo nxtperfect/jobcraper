@@ -9,14 +9,14 @@ type PaginationProps = {
 export default function Pagination({ maxPages, pageIndex, setPageIndex, offersPerPage, setOffersPerPage }: PaginationProps) {
   const options: Array<number> = [12, 24, 36, 60];
   function handlePreviousPage() {
-    if (pageIndex - 1 <= 0) {
+    if (pageIndex <= 1) {
       return;
     }
     setPageIndex(pageIndex - 1);
   }
 
   function handleNextPage() {
-    if (pageIndex + 1 >= maxPages) {
+    if (pageIndex >= maxPages) {
       return;
     }
     setPageIndex(pageIndex + 1);
@@ -33,11 +33,8 @@ export default function Pagination({ maxPages, pageIndex, setPageIndex, offersPe
       </div>
       <div className="flex flex-row gap-2 items-center justify-items-center">
         <p>Offers per page:</p>
-        <select className="bg-neutral-700 text-neutral-300 px-1 py-1 rounded-md" onChange={(e) => setOffersPerPage(Number.parseInt(e.target.value))}>
+        <select className="bg-neutral-700 text-neutral-300 px-1 py-1 rounded-md" onChange={(e) => setOffersPerPage(Number.parseInt(e.target.value))} defaultValue={offersPerPage}>
           {options.map((optionValue) => {
-            if (offersPerPage === optionValue) {
-              return (<option value={optionValue} selected>{optionValue}</option>)
-            }
             return (<option value={optionValue}>{optionValue}</option>)
           })}
         </select>
