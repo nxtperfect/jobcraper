@@ -1,6 +1,11 @@
 import { OfferType } from "../App";
 
-export default function Offer({ title, last_seen, by_company, city, technologies, additional_info, link, matching, is_applied }: OfferType) {
+type OfferProps = 
+  OfferType &
+{ debounce: () => void
+}
+
+export default function Offer({hashId, title, last_seen, by_company, city, technologies, additional_info, link, matching, is_applied, debounce }: OfferProps) {
 
   function openInNewTab(url: string) {
     const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
@@ -11,13 +16,29 @@ export default function Offer({ title, last_seen, by_company, city, technologies
     return () => openInNewTab(url)
   }
 
+  function isStaleOffer(last_seen: string) {
+    return last_seen !== getTodaysDate();
+  }
+
+  function getTodaysDate() {
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    return day + "-" + month + "-" + year;
+  }
+
+  function isWorthApplying(matching: number) {
+    return matching >= 50;
+  }
+
   return (
     <>
-      <article className="flex flex-col min-h-[600px] bg-neutral-800 text-neutral-100 p-4 rounded-lg h-full px-4 text-pretty">
+      <article key={hashId} className={`${isStaleOffer(last_seen) ? "opacity-25 cursor-not-allowed" : ""} flex flex-col min-h-[600px] bg-neutral-800 text-neutral-200 p-4 rounded-lg h-full px-4 text-pretty`}>
         <header className="leading-10">
           <div className="flex flex-row justify-between">
             <h2 className="text-xl font-bold text-white">{title}</h2>
-            <input className="self-center scale-150 cursor-not-allowed" type="checkbox" value={is_applied} disabled />
+            <input className="self-center scale-150 cursor-not-allowed" type="checkbox" value={is_applied} onClick={debounce} disabled />
           </div>
           <span className="tracking-wide text-sm">Last seen: {last_seen}</span>
           <div className="flex flex-row gap-4 mb-2" role="list" aria-label="Job details">
@@ -32,8 +53,8 @@ export default function Offer({ title, last_seen, by_company, city, technologies
           }</span>
         </div>
         <footer className="flex flex-row items-center gap-4">
-          <a onClick={onClickUrl(link)} className="inline-block px-4 py-2 bg-cyan-600 text-white rounded-md shadow-md hover:bg-blue-500 cursor-pointer" aria-label="View job offer details in new tab">Open in new tab</a>
-          <span>Matches your known technologies in: {matching * 100.0}%</span>
+          <a onClick={onClickUrl(link)} className={`${isWorthApplying(matching) ? "animate-pulse" : ""} inline-block px-4 py-2 bg-cyan-600 text-white rounded-md shadow-md hover:bg-blue-500 cursor-pointer`} aria-label="View job offer details in new tab">Open in new tab</a>
+          <span className={`${isWorthApplying(matching) ? "bg-green-600" : ""} flex px-1 h-full items-center rounded-md`} >Matches your known technologies in: {matching.toFixed(2)}%</span>
         </footer>
       </article>
     </>

@@ -41,14 +41,13 @@ def runBulldogJob():
     containerDivs = parsedResponse.select(f'div[class^="bg-gray-bg"]')
     offers = containerDivs[0].select('div[class="container"]')[0].find_all('a')
 
-    for offer in offers:
-        Thread(target=insertNewOfferFromList,args=(offer, db,)).start()
+    Thread(target=insertNewOfferFromList,args=(offers, db,)).start()
 
-def insertNewOfferFromList(offer, db):
-    newOffer = NoFluffJobsOffer(offer)
-    lastRow = db.insertNewOffer(newOffer)
-    print("New offer:", newOffer.print())
-    print("Last inserted row:", lastRow)
+def insertNewOfferFromList(offers, db):
+    offersList = []
+    for offer in offers:
+        newOffer = NoFluffJobsOffer(offer)
+    multipleLastRow = db.insertMultipleOffers(offersList)
 
 if __name__ == "__main__":
     runBulldogJob()

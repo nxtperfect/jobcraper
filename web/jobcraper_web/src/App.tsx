@@ -4,6 +4,7 @@ import Filters from "./components/Filters";
 import Pagination from "./components/Pagination";
 
 export type OfferType = {
+  hashId: string;
   title: string;
   last_seen: string;
   by_company: string;

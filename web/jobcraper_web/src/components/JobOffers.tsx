@@ -1,21 +1,26 @@
+import { OfferType } from "../App";
 import Offer from "./Offer"
-
-type OfferType = {
-  title: string,
-  last_seen: string,
-  by_company: string,
-  city: string,
-  technologies: string,
-  link: string,
-  matching: number,
-  is_applied: string
-};
 
 type JobOffersProps = {
   offers: Array<OfferType>,
+  debounce: () => void,
 };
 
-export default function JobOffers({ offers }: JobOffersProps) {
+export default function JobOffers({ offers, debounce }: JobOffersProps) {
+
+  /*
+    * function debounce(func, timeout = 300) {
+    * let timer;
+    * return (...args) => {
+      * clearTimeout(timer);
+      * timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    * };
+  * }
+  * function saveInput() {
+    * console.log('Saving data');
+  * }
+  * const processChange = debounce(() => saveInput());
+  */
 
   return (
     <>
@@ -23,7 +28,7 @@ export default function JobOffers({ offers }: JobOffersProps) {
         {offers.map((offer: OfferType) => {
           return (
             <li>
-              <Offer {...offer} />
+              <Offer {...offer, debounce} />
             </li>
           )
         })}

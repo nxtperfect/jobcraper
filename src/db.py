@@ -4,6 +4,8 @@ from typing import LiteralString
 from dotenv import load_dotenv 
 import hashlib
 
+from src.scrape_agent import TECHNOLOGIES
+
 load_dotenv()
 
 class Offer:
@@ -23,8 +25,9 @@ class Offer:
         md5.update(bytes(hash_str, encoding="utf-8"))
         self.hashId = str(md5.hexdigest())
 
-    def formatToDatabase(self) -> tuple[str, str, str, str, str, LiteralString, LiteralString, str, int, str, str]:
-        return (self.hashId, self.title, self.last_seen, self.by_company, self.city, ','.join(self.additional_info), ','.join(self.technologies), self.link, 0, "false", self.last_seen)
+    def formatToDatabase(self) -> tuple[str, str, str, str, str, LiteralString, LiteralString, str, float, str, str]:
+        matching = (len([x for x in self.technologies if x in TECHNOLOGIES]) / float(len(self.technologies) if self.technologies else 1)) * 100
+        return (self.hashId, self.title, self.last_seen, self.by_company, self.city, ','.join(self.additional_info), ','.join(self.technologies), self.link, matching, "false", self.last_seen)
 
 CREATE_TABLE_STATEMENT = """
                         CREATE TABLE IF NOT EXISTS offers (
@@ -45,6 +48,7 @@ class Database:
         self.conn = sqlite3.connect(str(environ.get("DATABASE_PATH")), check_same_thread=False, timeout=3)
     def __init__(self):
         self.connect()
+        # self.removeOffersTable()
         try:
             with self.conn:
                 print("Connected")
@@ -54,6 +58,25 @@ class Database:
                 print("Table created successfully")
         except Exception as e:
             print(f"Failed to create database {e}")
+
+    def insertMultipleOffers(self, offers: list[Offer]):
+        print("Inserting multiple offers...")
+        insert_statement = """
+        INSERT INTO offers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET last_seen=?;
+        """
+        self.connect()
+        formatedOffers = [x.formatToDatabase() for x in offers]
+        try:
+            with self.conn:
+                cursor = self.conn.cursor()
+                cursor.executemany(insert_statement, formatedOffers)
+                self.conn.commit()
+            print("Multiple offers inserted correctly.")
+            return cursor.lastrowid
+        except Exception as e:
+            print("Failed to insert multiple offers", e)
+            return -1
 
     def insertNewOffer(self, offer: Offer):
         print(f"Inserting new offer with hash {offer.hashId}")

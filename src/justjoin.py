@@ -19,11 +19,11 @@ class JustJoinOffer(Offer):
             self.title = offer.find_next('h3').get_text().strip()
             additional_info = offer.find_next(class_=ADDITIONAL_INFORMATION_CLASS)
 
-            self.by_company = additional_info[0].get_text().strip()
-            self.city = additional_info[1].get_text().strip()
-            self.additional_info = [x.get_text().strip() for x in additional_info[2:]]
-            self.technologies = [x.find_next('div').find_next('div').get_text().strip() for x in offer.select(f'div[class^="{TECHNOLOGY_CLASS}"]')]
-            self.link = offer.find_next('a')[0]['href'].strip()
+            self.by_company = additional_info.contents[0].get_text().strip()
+            self.city = additional_info.contents[1].get_text().strip()
+            self.additional_info = [x.get_text().strip() for x in additional_info.contents[2:]]
+            self.technologies = [x.get_text().strip() for x in offer.select(f'div[class^="{TECHNOLOGY_CLASS}"]')]
+            self.link = "https://justjoin.it" + offer.find_next('a')['href'].strip()
             self.calculateAndAssignHash()
         except Exception as e:
             print(f"Failed to add new offer {e}")
@@ -40,14 +40,14 @@ def runJustJoin():
     parsedResponse = returnBeautifulSoupedHTML(response.content)
     offers = parsedResponse.select(f"div[{OFFER_CLASS}]")
 
-    for offer in offers:
-        Thread(target=insertNewOfferFromList,args=(offer, db,)).start()
-    # db.selectAllOffers()
+    Thread(target=insertNewOffersFromList,args=(offers, db,)).start()
 
-def insertNewOfferFromList(offer, db):
-    newOffer = JustJoinOffer(offer)
-    lastRow = db.insertNewOffer(newOffer)
-    # print("Last inserted row:", lastRow)
+def insertNewOffersFromList(offers, db):
+    offersList = []
+    for offer in offers:
+        newOffer = JustJoinOffer(offer)
+        offersList.append(newOffer)
+    multipleLastRow = db.insertMultipleOffers(offersList)
 
 if __name__ == "__main__":
     runJustJoin()

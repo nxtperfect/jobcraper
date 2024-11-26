@@ -37,14 +37,14 @@ def runNoFluffJobs():
     twoOffersLists = parsedResponse.select(f'div[class^="{ALL_OFFERS_CLASS}"]')
     offers = [y for x in twoOffersLists for y in x.find_all_next('a')]
 
-    for offer in offers:
-        Thread(target=insertNewOfferFromList,args=(offer, db,)).start()
-    # db.selectAllOffers()
+    Thread(target=insertNewOffersFromList,args=(offers, db,)).start()
 
-def insertNewOfferFromList(offer, db):
-    newOffer = NoFluffJobsOffer(offer)
-    lastRow = db.insertNewOffer(newOffer)
-    # print("Last inserted row:", lastRow)
+def insertNewOffersFromList(offers, db):
+    offersList = []
+    for offer in offers:
+        newOffer = NoFluffJobsOffer(offer)
+        offersList.append(newOffer)
+    multipleLastRow = db.insertMultipleOffers(offersList)
 
 if __name__ == "__main__":
     runNoFluffJobs()

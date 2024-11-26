@@ -40,23 +40,22 @@ def runPracuj():
     session = setSession(headers, proxies)
 
     try:
-        MAX_OFFERS = int(getMaxOffers(session))
+        MAX_PAGES = int(getMaxPages(session))
     except Exception as e:
         print(f"Failed to get max number of offers, returning {e}")
         return
 
-    # db.removeOffersTable()
-    for i in range(1, MAX_OFFERS):
-        Thread(target=insertNewOfferFromList,args=(session, db, i,)).start()
+    for i in range(1, MAX_PAGES):
+        Thread(target=insertNewOffersFromList,args=(session, db, i,)).start()
 
-def getMaxOffers(session):
+def getMaxPages(session):
     url = str(environ.get("PRACUJ_URL"))
     response = fetchWebsite(session, url)
     parsedResponse = returnBeautifulSoupedHTML(response.content)
-    max_offers = parsedResponse.select(f'span[data-test={PAGINATION_MAX_OFFER_NUMBER}]')[0].get_text()
-    return max_offers
+    max_pages = parsedResponse.select(f'span[data-test={PAGINATION_MAX_OFFER_NUMBER}]')[0].get_text()
+    return max_pages
 
-def insertNewOfferFromList(session, db, i):
+def insertNewOffersFromList(session, db, i):
     session = updateSessionUserAgentAndProxy(session)
     url = str(environ.get("PRACUJ_URL")) + str(environ.get("PRACUJ_PAGINATION")) + str(i)
     try:
@@ -66,9 +65,11 @@ def insertNewOfferFromList(session, db, i):
         return
     parsedResponse = returnBeautifulSoupedHTML(response.content)
     offers = parsedResponse.find_all(class_=OFFER_CLASS)
+    offersList = []
     for i, offer in enumerate(offers[:-1]):
         newOffer = PracujOffer(offer)
-        lastRow = db.insertNewOffer(newOffer)
+        offersList.append(newOffer)
+    multipleLastRow = db.insertMultipleOffers(offersList)
 
 
 if __name__ == "__main__":
