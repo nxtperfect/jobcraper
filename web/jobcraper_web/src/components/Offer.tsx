@@ -47,7 +47,7 @@ export default function Offer({hashId, title, last_seen, by_company, city, techn
           </div>
         </header>
         <div className="flex-grow">
-          <span className="text-neutral-300 mb-4">Additional information: <ul className="list-disc list-inside">{additional_info?.split(",").map((info) => <li>{info.trim()}</li>) || <p className="bg-neutral-300 text-neutral-700 rounded-md w-fit px-1">No information</p>}</ul></span>
+          <span className="text-neutral-300 mb-4">Additional information: <ul className="list-disc list-inside">{additional_info !== null && additional_info.length > 0 ? additional_info?.split(",").map((info) => <li>{info.trim()}</li>) : <p className="bg-neutral-300 text-neutral-700 rounded-md w-fit px-1">No information</p>}</ul></span>
           <span className="text-neutral-300 mt-6 flex flex-row flex-wrap gap-2">Technologies: {
             technologies.length > 1 ? technologies.split(",").map((tech) => <p className="bg-neutral-300 text-neutral-700 rounded-md px-1">{tech}</p>) : <p className="bg-neutral-300 text-neutral-700 rounded-md px-1">No information</p>
           }</span>

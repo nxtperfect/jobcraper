@@ -17,11 +17,10 @@ class JustJoinOffer(Offer):
         try:
             self.last_seen = strftime("%d-%m-%Y", localtime())
             self.title = offer.find_next('h3').get_text().strip()
-            additional_info = offer.find_next(class_=ADDITIONAL_INFORMATION_CLASS)
+            additional_info = [x for x in offer.select_one(f'.{ADDITIONAL_INFORMATION_CLASS}') if not x.get_text().strip().startswith('.')]
 
-            self.by_company = additional_info.contents[0].get_text().strip()
-            self.city = additional_info.contents[1].get_text().strip()
-            self.additional_info = [x.get_text().strip() for x in additional_info.contents[2:]]
+            self.by_company = additional_info[0].get_text().strip()
+            self.city = additional_info[1].get_text().strip()
             self.technologies = [x.get_text().strip() for x in offer.select(f'div[class^="{TECHNOLOGY_CLASS}"]')]
             self.link = "https://justjoin.it" + offer.find_next('a')['href'].strip()
             self.calculateAndAssignHash()
