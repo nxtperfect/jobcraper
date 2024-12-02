@@ -1,11 +1,13 @@
 import { OfferType } from "../App";
+import Checkbox from "./Checkbox";
 
-type OfferProps = 
+type OfferProps =
   OfferType &
-{ debounce: () => void
-}
+  {
+    changeOfferStatus: (hashId: string, isApplied: boolean) => void
+  }
 
-export default function Offer({hashId, title, last_seen, by_company, city, technologies, additional_info, link, matching, is_applied, debounce }: OfferProps) {
+export default function Offer({ hashId, title, last_seen, by_company, city, technologies, additional_info, link, matching, is_applied, changeOfferStatus }: OfferProps) {
 
   function openInNewTab(url: string) {
     const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
@@ -22,9 +24,10 @@ export default function Offer({hashId, title, last_seen, by_company, city, techn
 
   function getTodaysDate() {
     const date = new Date();
-    let day = date.getDate();
+    let day = date.getDate().toString();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
+    if (Number.parseInt(day) < 10) day = "0" + day;
     return day + "-" + month + "-" + year;
   }
 
@@ -38,7 +41,10 @@ export default function Offer({hashId, title, last_seen, by_company, city, techn
         <header className="leading-10">
           <div className="flex flex-row justify-between">
             <h2 className="text-xl font-bold text-white">{title}</h2>
-            <input className="self-center scale-150 cursor-not-allowed" type="checkbox" value={is_applied} onClick={debounce} disabled />
+            <Checkbox />
+            {
+              //onChange={//changeOfferStatus(hashId, is_applied === 0)} />
+            }
           </div>
           <span className="tracking-wide text-sm">Last seen: {last_seen}</span>
           <div className="flex flex-row gap-4 mb-2" role="list" aria-label="Job details">

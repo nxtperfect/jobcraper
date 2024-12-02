@@ -3,10 +3,18 @@ import Offer from "./Offer"
 
 type JobOffersProps = {
   offers: Array<OfferType>,
-  debounce: () => void,
+  changeOfferStatus: (hashId: string, isApplied: boolean) => void,
 };
 
-export default function JobOffers({ offers, debounce }: JobOffersProps) {
+export default function JobOffers({ offers, changeOfferStatus }: JobOffersProps) {
+
+  function debounce(func: () => void, timeout = 2000) {
+    let timer: NodeJS.Timeout;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
+  }
 
   return (
     <>
@@ -14,7 +22,7 @@ export default function JobOffers({ offers, debounce }: JobOffersProps) {
         {offers.map((offer: OfferType) => {
           return (
             <li>
-              <Offer {...offer} debounce={debounce} />
+              <Offer {...offer} changeOfferStatus={(hashId: string, isApplied: boolean) => debounce(changeOfferStatus(hashId, isApplied))} />
             </li>
           )
         })}

@@ -75,7 +75,7 @@ function App() {
     setFilteredOffers(() => offers.filter((offer) => offer.title === activeFilters?.title && activeFilters?.companiesToInclude.includes(offer.by_company) && activeFilters?.citiesToInclude.includes(offer.city) && activeFilters?.technologiesToInclude.includes(offer.technologies)))
   }
 
-    function debounce(func, timeout = 2000) {
+    function debounce(func: () => void, timeout = 2000) {
       let timer: NodeJS.Timeout;
       return (...args) => {
         clearTimeout(timer);
@@ -84,7 +84,8 @@ function App() {
     }
 
     function changeOfferStatus(hashId: string, isApplied: "true" | "false") {
-      setOffersForStatusChange(cur => [...cur, {hashId, isApplied}])
+      console.log("Adding new offer", hashId);
+      setOffersForStatusChange(cur => [...cur, {hashId, isApplied}]);
     }
 
 
@@ -92,7 +93,7 @@ function App() {
     <main className="bg-neutral-100 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100">
       {process.env.REACT_APP_FEATURE_FLAG_FILTERS === "true" ? <Filters cities={cities} companies={companies} technologies={technologies} handleUpdatingFilters={handleUpdatingFilters} /> : null}
       <Pagination maxPages={Math.ceil(filteredOffers.length / offersPerPage)} pageIndex={pageIndex} setPageIndex={setPageIndex} offersPerPage={offersPerPage} setOffersPerPage={setOffersPerPage} />
-      <JobOffers offers={filteredOffers.slice((pageIndex - 1) * offersPerPage, (pageIndex) * offersPerPage)} debounce={debounce} />
+      <JobOffers offers={filteredOffers.slice((pageIndex - 1) * offersPerPage, (pageIndex) * offersPerPage)} changeOfferStatus={changeOfferStatus} />
       <Pagination maxPages={Math.ceil(filteredOffers.length / offersPerPage)} pageIndex={pageIndex} setPageIndex={setPageIndex} offersPerPage={offersPerPage} setOffersPerPage={setOffersPerPage} />
     </main>
   )
