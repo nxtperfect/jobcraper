@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
 
 type CheckboxProps = {
-  onChange?: (isApplied) => void | null
-  // isChecked: boolean
+  id: string,
+  isApplied: boolean,
+  onChange: (id: string, isApplied: boolean) => void
 }
 
-export default function Checkbox({ onChange }: CheckboxProps) {
-  const [isChecked, setIsChecked] = useState<boolean>(false);
+export default function Checkbox({ id, isApplied, onChange }: CheckboxProps) {
+  const [isChecked, setIsChecked] = useState<boolean>(isApplied);
 
   function handleChange() {
+    console.log("Handling change");
     setIsChecked(prev => !prev);
-    if (onChange !== null) {
-      onChange(isChecked);
-    }
+    onChange(id, isChecked);
   }
 
   return (

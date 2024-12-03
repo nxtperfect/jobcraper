@@ -3,7 +3,7 @@ import Offer from "./Offer"
 
 type JobOffersProps = {
   offers: Array<OfferType>,
-  changeOfferStatus: (hashId: string, isApplied: boolean) => void,
+  changeOfferStatus: (id: string, isApplied: boolean) => void,
 };
 
 export default function JobOffers({ offers, changeOfferStatus }: JobOffersProps) {
@@ -21,8 +21,8 @@ export default function JobOffers({ offers, changeOfferStatus }: JobOffersProps)
       <ul className={`flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 px-6`}>
         {offers.map((offer: OfferType) => {
           return (
-            <li>
-              <Offer {...offer} changeOfferStatus={(hashId: string, isApplied: boolean) => debounce(changeOfferStatus(hashId, isApplied))} />
+            <li key={offer.id}>
+              <Offer {...offer} changeOfferStatus={changeOfferStatus} />
             </li>
           )
         })}

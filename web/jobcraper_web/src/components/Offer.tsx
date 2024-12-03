@@ -4,10 +4,10 @@ import Checkbox from "./Checkbox";
 type OfferProps =
   OfferType &
   {
-    changeOfferStatus: (hashId: string, isApplied: boolean) => void
+    changeOfferStatus: (id: string, isApplied: boolean) => void
   }
 
-export default function Offer({ hashId, title, last_seen, by_company, city, technologies, additional_info, link, matching, is_applied, changeOfferStatus }: OfferProps) {
+export default function Offer({ id, title, last_seen, by_company, city, technologies, additional_info, link, matching, is_applied, changeOfferStatus }: OfferProps) {
 
   function openInNewTab(url: string) {
     const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
@@ -37,14 +37,11 @@ export default function Offer({ hashId, title, last_seen, by_company, city, tech
 
   return (
     <>
-      <article key={hashId} className={`${isStaleOffer(last_seen) ? "opacity-25 cursor-not-allowed" : ""} flex flex-col min-h-[600px] bg-neutral-800 text-neutral-200 p-4 rounded-lg h-full px-4 text-pretty`}>
+      <article key={id} className={`${isStaleOffer(last_seen) ? "opacity-25 cursor-not-allowed " : ""}flex flex-col min-h-[600px] bg-neutral-800 text-neutral-200 p-4 rounded-lg h-full px-4 text-pretty`}>
         <header className="leading-10">
           <div className="flex flex-row justify-between">
             <h2 className="text-xl font-bold text-white">{title}</h2>
-            <Checkbox />
-            {
-              //onChange={//changeOfferStatus(hashId, is_applied === 0)} />
-            }
+            <Checkbox id={id} isApplied={is_applied === 1} onChange={changeOfferStatus} />
           </div>
           <span className="tracking-wide text-sm">Last seen: {last_seen}</span>
           <div className="flex flex-row gap-4 mb-2" role="list" aria-label="Job details">

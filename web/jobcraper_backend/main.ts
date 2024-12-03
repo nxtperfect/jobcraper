@@ -18,7 +18,7 @@ app.get('/offers', (c) => {
       technologies: string,
       link: string
     }>;
-    
+
     return c.json(offers);
   } catch (error) {
     console.error("Error fetching offers:", error);
@@ -27,12 +27,13 @@ app.get('/offers', (c) => {
 });
 
 app.post('/update/offers/isApplied', (c) => {
+  console.log(c.req);
   try {
     const stmt = db.prepare("UPDATE offers SET is_applied=? WHERE id=?;");
     c.req.param("offers").forEach((hashId: string, is_applied: string) => {
       stmt.run(is_applied, hashId);
     });
-    
+
     return c.json(200);
   } catch (error) {
     console.error("Error updating offers:", error);
