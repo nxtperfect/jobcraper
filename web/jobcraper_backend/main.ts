@@ -3,7 +3,7 @@ import { Database } from "jsr:@db/sqlite";
 
 const app = new Hono()
 
-const db = new Database("../../db/database.db", { readonly: true });
+const db = new Database("../../db/database.db");
 
 app.get('/offers', (c) => {
   try {
@@ -22,22 +22,23 @@ app.get('/offers', (c) => {
     return c.json(offers);
   } catch (error) {
     console.error("Error fetching offers:", error);
-    return c.json({ error: "Failed to fetch offers" }, 500);
+    return c.json({ error: `Failed to fetch offers ${error}` }, 500);
   }
 });
 
-app.post('/update/offers/isApplied', (c) => {
-  console.log(c.req);
+app.post('/update/offers/is_applied', async (c) => {
+  const data = await c.req.json();
+  console.log(data.id);
   try {
     const stmt = db.prepare("UPDATE offers SET is_applied=? WHERE id=?;");
-    c.req.param("offers").forEach((hashId: string, is_applied: string) => {
-      stmt.run(is_applied, hashId);
-    });
+    const hashId = data.id;
+    const is_applied = data.isApplied;
+    stmt.run(is_applied, hashId);
 
     return c.json(200);
   } catch (error) {
     console.error("Error updating offers:", error);
-    return c.json({ error: "Failed to update offers" }, 500);
+    return c.json({ error: `Failed to update offers ${error}` }, 500);
   }
 });
 

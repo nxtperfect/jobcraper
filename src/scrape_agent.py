@@ -1,3 +1,4 @@
+from time import localtime, strftime
 from requests import Session
 from random import choice
 from bs4 import BeautifulSoup
@@ -52,6 +53,10 @@ def loadTechnologiesFromConfig():
 def loadConfig(CONFIG_PATH: str):
     data = load(CONFIG_PATH)
     return data
+
+def getCurrentTime():
+    return strftime("%Y-%m-%d", localtime())
+
 
 CONFIG_PATH = "./config.toml"
 CONFIG = loadConfig(CONFIG_PATH)

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import JobOffers from "./components/JobOffers"
 import Filters from "./components/Filters";
 import Pagination from "./components/Pagination";
+import LayoutToggle from "./components/LayoutToggle";
 
 export type OfferType = {
   id: string;
@@ -33,7 +34,6 @@ export default function App() {
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [offersPerPage, setOffersPerPage] = useState<number>(12);
   const [activeFilters, setActiveFilters] = useState<ActiveFilter>({ title: "", companiesToInclude: [], citiesToInclude: [], technologiesToInclude: [] });
-  const [offersForStatusChange, setOffersForStatusChange] = useState<Array<{ id: string, isApplied: boolean }>>([]);
 
   useEffect(() => {
     fetch("http://localhost:8000/offers")
@@ -75,47 +75,31 @@ export default function App() {
     setFilteredOffers(() => offers.filter((offer) => offer.title === activeFilters?.title && activeFilters?.companiesToInclude.includes(offer.by_company) && activeFilters?.citiesToInclude.includes(offer.city) && activeFilters?.technologiesToInclude.includes(offer.technologies)))
   }
 
-  function debounce(func: () => void, timeout = 3000) {
-    let timer: NodeJS.Timeout;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { func.apply(this, args); }, timeout);
-    };
-  }
+  function handleDebounceOfferStatus(id: string, isApplied: boolean) {
+    console.log("Handling debounce fr", id, isApplied);
+    const url = "http://localhost:8000/update/offers/is_applied";
+    const data = { id: id, isApplied: isApplied };
 
-  function changeOfferStatus(id: string, isApplied: boolean) {
-    console.log("Editing offer", id, isApplied);
-    if (offersForStatusChange.some(offer => { return offer.id === id })) {
-      setOffersForStatusChange(cur => cur.filter((offer) => offer.id !== id));
-      return;
-    }
-    setOffersForStatusChange(cur => [...cur, { id, isApplied }]);
-    console.log(offersForStatusChange);
-  }
-
-  async function handleDebounceOfferStatus(id: string, isApplied: boolean) {
-    console.log("Handling debounce fr");
-    changeOfferStatus(id, isApplied);
-    // send post request
-    await fetch("http://localhost:8000/update_offers", {
+    fetch(url, {
       method: "POST",
-      body: JSON.stringify({ offers: offersForStatusChange }),
+      body: JSON.stringify(data),
       headers: {
         "Content-type": "application/json; charset=UTF-8"
       }
-    });
-    setOffersForStatusChange([]);
+    }).then((response) => response.json())
+      .then((data) => console.log(data));
   }
 
 
   return (
     <main className="bg-neutral-100 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100">
+      {process.env.REACT_APP_FEATURE_FLAG_DOOM_SCROLLING_LAYOUT === "true" ? <LayoutToggle /> : null}
       {process.env.REACT_APP_FEATURE_FLAG_FILTERS === "true" ? <Filters cities={cities} companies={companies} technologies={technologies} handleUpdatingFilters={handleUpdatingFilters} /> : null}
       <Pagination maxPages={Math.ceil(filteredOffers.length / offersPerPage)} pageIndex={pageIndex} setPageIndex={setPageIndex} offersPerPage={offersPerPage} setOffersPerPage={setOffersPerPage} />
       {
         // <JobOffers offers={filteredOffers.slice((pageIndex - 1) * offersPerPage, (pageIndex) * offersPerPage)} changeOfferStatus={changeOfferStatus} />
       }
-      <JobOffers offers={filteredOffers.slice((pageIndex - 1) * offersPerPage, (pageIndex) * offersPerPage)} changeOfferStatus={(id, isApplied) => debounce(await handleDebounceOfferStatus(id, isApplied))} />
+      <JobOffers offers={filteredOffers.slice((pageIndex - 1) * offersPerPage, (pageIndex) * offersPerPage)} changeOfferStatus={handleDebounceOfferStatus} />
       <Pagination maxPages={Math.ceil(filteredOffers.length / offersPerPage)} pageIndex={pageIndex} setPageIndex={setPageIndex} offersPerPage={offersPerPage} setOffersPerPage={setOffersPerPage} />
     </main>
   )

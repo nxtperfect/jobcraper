@@ -1,5 +1,5 @@
 from src.db import Database, Offer
-from src.scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession
+from src.scrape_agent import fetchWebsite, getCurrentTime, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession
 from os import environ
 from threading import Thread
 from time import localtime, strftime
@@ -13,7 +13,7 @@ class NoFluffJobsOffer(Offer):
     def __init__(self, offer):
         super().__init__(offer)
         try:
-            self.last_seen = strftime("%d-%m-%Y", localtime())
+            self.last_seen = getCurrentTime()
             additional_info = offer.select(f'div[class={TITLE_CLASS}]')[0]
             self.title = additional_info.find_next('h3').get_text().strip()
             self.by_company = additional_info.find('div').find('div').get_text().strip()

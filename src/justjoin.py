@@ -1,6 +1,6 @@
 from time import localtime, strftime
 from src.db import Database, Offer
-from src.scrape_agent import fetchWebsite, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession
+from src.scrape_agent import fetchWebsite, getCurrentTime, getRandomProxy, getRandomUserAgent, returnBeautifulSoupedHTML, setHeaders, setProxies, setSession
 from os import environ
 from threading import Thread
 
@@ -15,7 +15,7 @@ class JustJoinOffer(Offer):
     def __init__(self, offer):
         super().__init__(offer)
         try:
-            self.last_seen = strftime("%d-%m-%Y", localtime())
+            self.last_seen = getCurrentTime()
             self.title = offer.find_next('h3').get_text().strip()
             additional_info = [x for x in offer.select_one(f'.{ADDITIONAL_INFORMATION_CLASS}') if not x.get_text().strip().startswith('.')]
 

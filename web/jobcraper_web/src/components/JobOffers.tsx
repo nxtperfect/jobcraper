@@ -8,14 +8,6 @@ type JobOffersProps = {
 
 export default function JobOffers({ offers, changeOfferStatus }: JobOffersProps) {
 
-  function debounce(func: () => void, timeout = 2000) {
-    let timer: NodeJS.Timeout;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { func.apply(this, args); }, timeout);
-    };
-  }
-
   return (
     <>
       <ul className={`flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 px-6`}>

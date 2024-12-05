@@ -28,7 +28,7 @@ export default function Offer({ id, title, last_seen, by_company, city, technolo
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
     if (Number.parseInt(day) < 10) day = "0" + day;
-    return day + "-" + month + "-" + year;
+    return `${year}-${month}-${day}`;
   }
 
   function isWorthApplying(matching: number) {
