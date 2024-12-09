@@ -30,8 +30,8 @@ app.post('/update/offers/is_applied', async (c) => {
   const data = await c.req.json();
   try {
     const stmt = db.prepare("UPDATE offers SET is_applied=? WHERE id=?;");
-    const hashId = data.id;
-    const is_applied = data.isApplied;
+    const is_applied = data.isApplied.toString();
+    const hashId = data.id.toString();
     stmt.run(is_applied, hashId);
 
     return c.json(200);

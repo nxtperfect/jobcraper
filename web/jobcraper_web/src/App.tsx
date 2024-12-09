@@ -14,7 +14,7 @@ export type OfferType = {
   additional_info?: string;
   link: string;
   matching: number;
-  is_applied: number;
+  is_applied: string;
 };
 
 export type ActiveFilter = {
@@ -96,9 +96,6 @@ export default function App() {
       {process.env.REACT_APP_FEATURE_FLAG_DOOM_SCROLLING_LAYOUT === "true" ? <LayoutToggle /> : null}
       {process.env.REACT_APP_FEATURE_FLAG_FILTERS === "true" ? <Filters cities={cities} companies={companies} technologies={technologies} handleUpdatingFilters={handleUpdatingFilters} /> : null}
       <Pagination maxPages={Math.ceil(filteredOffers.length / offersPerPage)} pageIndex={pageIndex} setPageIndex={setPageIndex} offersPerPage={offersPerPage} setOffersPerPage={setOffersPerPage} />
-      {
-        // <JobOffers offers={filteredOffers.slice((pageIndex - 1) * offersPerPage, (pageIndex) * offersPerPage)} changeOfferStatus={changeOfferStatus} />
-      }
       <JobOffers offers={filteredOffers.slice((pageIndex - 1) * offersPerPage, (pageIndex) * offersPerPage)} changeOfferStatus={handleDebounceOfferStatus} />
       <Pagination maxPages={Math.ceil(filteredOffers.length / offersPerPage)} pageIndex={pageIndex} setPageIndex={setPageIndex} offersPerPage={offersPerPage} setOffersPerPage={setOffersPerPage} />
     </main>

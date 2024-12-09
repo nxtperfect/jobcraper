@@ -41,7 +41,7 @@ export default function Offer({ id, title, last_seen, by_company, city, technolo
         <header className="leading-10">
           <div className="flex flex-row justify-between">
             <h2 className="text-xl font-bold text-white">{title}</h2>
-            <Checkbox id={id} isApplied={is_applied === 1} onChange={changeOfferStatus} />
+            <Checkbox id={id} isApplied={is_applied} onChange={changeOfferStatus} />
           </div>
           <span className="tracking-wide text-sm">Last seen: {last_seen}</span>
           <div className="flex flex-row gap-4 mb-2" role="list" aria-label="Job details">
