@@ -25,9 +25,11 @@ export default function Offer({ id, title, last_seen, by_company, city, technolo
   function getTodaysDate() {
     const date = new Date();
     let day = date.getDate().toString();
-    let month = date.getMonth() + 1;
+    let month = (date.getMonth() + 1).toString();
     let year = date.getFullYear();
     if (Number.parseInt(day) < 10) day = "0" + day;
+    if (Number.parseInt(month) < 10) month = "0" + month;
+    console.log(year, month, day);
     return `${year}-${month}-${day}`;
   }
 

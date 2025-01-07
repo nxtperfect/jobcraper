@@ -19,9 +19,9 @@ export type OfferType = {
 
 export type ActiveFilter = {
   title: string,
-  companiesToInclude: Array<string>,
-  citiesToInclude: Array<string>,
-  technologiesToInclude: Array<string>,
+  companiesToInclude: Array<string> | undefined,
+  citiesToInclude: Array<string> | undefined,
+  technologiesToInclude: Array<string> | undefined,
 };
 
 
@@ -65,14 +65,14 @@ export default function App() {
         };
       }
       activeFilters.title = searchTitle;
-      activeFilters.citiesToInclude = includedCities;
-      activeFilters.companiesToInclude = includedCompanies;
-      activeFilters.technologiesToInclude = includedTechnologies;
+      activeFilters.citiesToInclude = includedCities.length > 0 ? includedCities : cities;
+      activeFilters.companiesToInclude = includedCompanies.length > 0 ? includedCompanies : companies;
+      activeFilters.technologiesToInclude = includedTechnologies.length > 0 ? includedTechnologies : technologies;
       return activeFilters;
     }
     )
     console.log("Updating filters...", activeFilters)
-    setFilteredOffers(() => offers.filter((offer) => offer.title === activeFilters?.title && activeFilters?.companiesToInclude.includes(offer.by_company) && activeFilters?.citiesToInclude.includes(offer.city) && activeFilters?.technologiesToInclude.includes(offer.technologies)))
+    setFilteredOffers(() => offers.filter((offer) => offer.title === activeFilters?.title && activeFilters?.companiesToInclude?.includes(offer.by_company) && activeFilters?.citiesToInclude?.includes(offer.city) && activeFilters?.technologiesToInclude?.includes(offer.technologies)))
   }
 
   function handleDebounceOfferStatus(id: string, isApplied: boolean) {
