@@ -1,9 +1,17 @@
 import { Hono } from "npm:hono"
+import { cors } from "npm:hono/cors"
 import { Database } from "jsr:@db/sqlite";
 
 const app = new Hono()
 
 const db = new Database("../../db/database.db");
+
+app.use('/*', cors({
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}))
 
 app.get('/offers', (c) => {
   try {

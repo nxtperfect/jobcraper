@@ -23,4 +23,4 @@ USER_AGENTS = [
         ]
 
 [Offers]
-TECHNOLOGIES = [ "React", "Next", "Next.js", "Svelte", "Tailwindcss", "SCSS", "CSS", "HTML", "HTML5", "Python", "Javascript", "Typescript", "GO", "Linux", "Git", "Express", "Express.js", "Node", "Node.js", "Numpy", "Pandas", "SQL", "C", "Java" ]
+TECHNOLOGIES = [ "React", "React.js", "Next", "Next.js", "Svelte", "Tailwindcss", "SCSS", "CSS", "HTML", "HTML5", "Python", "JavaScript", "TypeScript", "Linux", "Git", "Express", "Express.js", "Node", "Node.js", "Numpy", "Pandas", "SQL", "MySQL", "PostgreSQL", "SQLite" ]

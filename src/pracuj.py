@@ -42,8 +42,8 @@ def runPracuj():
     try:
         MAX_PAGES = int(getMaxPages(session))
     except Exception as e:
-        print(f"Failed to get max number of offers, returning {e}")
-        return
+        print(f"Failed to get max number of offers, falling back to 1 {e}")
+        MAX_PAGES = 2
 
     for i in range(1, MAX_PAGES):
         Thread(target=insertNewOffersFromList,args=(session, db, i,)).start()
