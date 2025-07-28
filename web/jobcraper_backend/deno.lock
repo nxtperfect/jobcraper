@@ -1,5 +1,5 @@
 {
-  "version": "4",
+  "version": "5",
   "specifiers": {
     "jsr:@db/sqlite@*": "0.11.1",
     "jsr:@db/sqlite@0.11": "0.11.1",
@@ -11,9 +11,9 @@
     "jsr:@std/fs@0.221": "0.221.0",
     "jsr:@std/path@0.217": "0.217.0",
     "jsr:@std/path@0.221": "0.221.0",
-    "npm:dotenv@^16.4.5": "16.4.5",
-    "npm:hono@*": "4.6.10",
-    "npm:hono@^4.6.10": "4.6.10"
+    "npm:dotenv@^16.6.0": "16.6.0",
+    "npm:hono@*": "4.8.3",
+    "npm:hono@^4.8.3": "4.8.3"
   },
   "jsr": {
     "@db/sqlite@0.11.1": {
@@ -65,11 +65,11 @@
     }
   },
   "npm": {
-    "dotenv@16.4.5": {
-      "integrity": "sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg=="
+    "dotenv@16.6.0": {
+      "integrity": "sha512-Omf1L8paOy2VJhILjyhrhqwLIdstqm1BvcDPKg4NGAlkwEu9ODyrFbvk8UymUOMCT+HXo31jg1lArIrVAAhuGA=="
     },
-    "hono@4.6.10": {
-      "integrity": "sha512-IXXNfRAZEahFnWBhUUlqKEGF9upeE6hZoRZszvNkyAz/CYp+iVbxm3viMvStlagRJohjlBRGOQ7f4jfcV0XMGg=="
+    "hono@4.8.3": {
+      "integrity": "sha512-jYZ6ZtfWjzBdh8H/0CIFfCBHaFL75k+KMzaM177hrWWm2TWL39YMYaJgB74uK/niRc866NMlH9B8uCvIo284WQ=="
     }
   },
   "redirects": {
@@ -102,8 +102,8 @@
   },
   "workspace": {
     "dependencies": [
-      "npm:dotenv@^16.4.5",
-      "npm:hono@^4.6.10"
+      "npm:dotenv@^16.6.0",
+      "npm:hono@^4.8.3"
     ]
   }
 }

@@ -1,0 +1,17 @@
+[project]
+name = "jobcraper"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bs4>=0.0.2",
+    "chardet>=5.2.0",
+    "dotenv>=0.9.9",
+    "faust-cchardet>=2.1.19",
+    "lxml>=6.0.0",
+    "nest-asyncio>=1.6.0",
+    "playwright>=1.54.0",
+    "requests>=2.32.4",
+    "toml>=0.10.2",
+]

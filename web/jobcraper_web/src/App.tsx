@@ -71,12 +71,10 @@ export default function App() {
       return activeFilters;
     }
     )
-    console.log("Updating filters...", activeFilters)
     setFilteredOffers(() => offers.filter((offer) => offer.title === activeFilters?.title && activeFilters?.companiesToInclude?.includes(offer.by_company) && activeFilters?.citiesToInclude?.includes(offer.city) && activeFilters?.technologiesToInclude?.includes(offer.technologies)))
   }
 
   function handleDebounceOfferStatus(id: string, isApplied: boolean) {
-    console.log("Handling debounce fr", id, isApplied);
     const url = "http://localhost:8000/update/offers/is_applied";
     const data = { id: id, isApplied: isApplied };
 

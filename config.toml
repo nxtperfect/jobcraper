@@ -11,16 +11,18 @@ PROXIES = [
         "46.4.94.62:80",
         "85.215.64.49:80",
         "43.134.32.184:3128",
-        "185.76.10.68:8081"
+        # "185.76.10.68:8081",
+        # "139.59.1.14:80",
+        # "32.223.6.94:80"
         ]
 
 USER_AGENTS = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0"
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Trailer/93.3.8652.5",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.10 Safari/605.1.1",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.3",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Trailer/93.3.8652.5"
         ]
 
 [Offers]
-TECHNOLOGIES = [ "React", "React.js", "Next", "Next.js", "Svelte", "Tailwindcss", "SCSS", "CSS", "HTML", "HTML5", "Python", "JavaScript", "TypeScript", "Linux", "Git", "Express", "Express.js", "Node", "Node.js", "Numpy", "Pandas", "SQL", "MySQL", "PostgreSQL", "SQLite" ]
+TECHNOLOGIES = [ "React", "React.js", "Next", "Next.js", "Svelte", "Tailwindcss", "SCSS", "CSS", "CSS3" , "HTML", "HTML5", "Python", "JavaScript", "TypeScript", "Linux", "Git", "Express", "Express.js", "Node", "Node.js", "Numpy", "Pandas", "SQL", "MySQL", "PostgreSQL", "SQLite" ]

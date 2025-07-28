@@ -1,3 +1,4 @@
+from collections.abc import MutableMapping
 from time import localtime, strftime
 from requests import Session
 from random import choice
@@ -5,62 +6,81 @@ from bs4 import BeautifulSoup
 import lxml
 import cchardet
 from toml import load
+import nest_asyncio  # This is needed to use sync API in repl
+from playwright.sync_api import sync_playwright
+
 
 def getRandomUserAgent():
     return choice(USER_AGENTS)
 
-def getRandomProxy():
+
+def getRandomProxy() -> str:
     return choice(PROXIES)
 
+
 def setHeaders(userAgent: str):
-    headers = {'User-Agent': userAgent}
+    headers = {"User-Agent": userAgent}
     return headers
 
+
 def setProxies(proxy: str):
-    proxies = {'http': proxy}
+    proxies = {"http": proxy}
     return proxies
 
-def setSession(headers, proxies):
+
+def setSession(headers: MutableMapping[str, str | bytes], proxies):
     print("Setting session...")
     session = Session()
     session.proxies.update(proxies)
     session.headers.update(headers)
     return session
 
-def updateSessionUserAgentAndProxy(session):
+
+def updateSessionUserAgentAndProxy(session: Session):
     print("Updating to new session for next page...")
     session.proxies.update(setProxies(getRandomProxy()))
     session.headers.update(setHeaders(getRandomUserAgent()))
     return session
 
-def fetchWebsite(session, url: str):
+
+def fetchWebsite(session: Session, url: str):
+    # nest_asyncio.apply()
+    # pw = sync_playwright.start()
+    # chrome = pw.chromium.launch(headless=True)
+    # page = chrome.new_page()
+    # page.goto("https://twitch.tv")
     response = session.get(url)
     return response
 
-def returnBeautifulSoupedHTML(pageContent):
-    parsed = BeautifulSoup(pageContent, 'lxml')
+
+def returnBeautifulSoupedHTML(pageContent: str):
+    parsed = BeautifulSoup(pageContent, "lxml")
     return parsed
 
-def loadProxiesFromConfig():
+
+def loadProxiesFromConfig() -> list[str]:
     return CONFIG["Scraper"]["PROXIES"]
 
-def loadUserAgentsFromConfig():
+
+def loadUserAgentsFromConfig() -> list[str]:
     return CONFIG["Scraper"]["USER_AGENTS"]
 
-def loadTechnologiesFromConfig():
+
+def loadTechnologiesFromConfig() -> list[str]:
     return CONFIG["Offers"]["TECHNOLOGIES"]
-    
+
+
 def loadConfig(CONFIG_PATH: str):
     data = load(CONFIG_PATH)
     return data
+
 
 def getCurrentTime():
     return strftime("%Y-%m-%d", localtime())
 
 
 CONFIG_PATH = "./config.toml"
-CONFIG = loadConfig(CONFIG_PATH)
-PROXIES = loadProxiesFromConfig()
-USER_AGENTS = loadUserAgentsFromConfig()
-TECHNOLOGIES = loadTechnologiesFromConfig()
-
+CONFIG: dict[str, list[str]] = loadConfig(CONFIG_PATH)
+PROXIES: list[str] = loadProxiesFromConfig()
+USER_AGENTS: list[str] = loadUserAgentsFromConfig()
+TECHNOLOGIES: list[str] = loadTechnologiesFromConfig()
