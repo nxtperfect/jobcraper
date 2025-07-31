@@ -104,13 +104,12 @@ def insertNewOffersFromList(session, db, i):
         return
     parsedResponse = returnBeautifulSoupedHTML(response)
     offers = parsedResponse.find_all(class_=OFFER_CLASS)
-    offersList = [0] * len(offers)
+    offersList: list[PracujOffer] = [0] * len(offers)
     for i, offer in enumerate(offers[:-1]):
         newOffer = PracujOffer(offer)
         if not newOffer:
             continue
         offersList[i] = newOffer
-        print(f"Got new offers {offersList}")
     multipleLastRow = db.insertMultipleOffers(offersList)
 
 

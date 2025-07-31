@@ -14,7 +14,7 @@ from os import environ
 from threading import Thread
 
 ALL_OFFERS_CLASS = "list-container"  # div
-TECHNOLOGIES_LIST_CLASS = "tiles-container"  # div
+TECHNOLOGIES_LIST_CLASS = "posting-tag"  # div
 
 
 class NoFluffJobsOffer(Offer):
@@ -22,6 +22,8 @@ class NoFluffJobsOffer(Offer):
         super().__init__(offer)
         try:
             self.last_seen = getCurrentTime()
+            if not offer.find_next("h3"):
+                raise Exception("Couldn't find title.")
             self.title = offer.find_next("h3").get_text().replace("NOWA", "").strip()
             additional_info = offer.find_next("footer")
 
@@ -29,13 +31,13 @@ class NoFluffJobsOffer(Offer):
             self.city = additional_info.find_next("span").get_text().strip()
             self.additional_info = []
             self.technologies = [
-                x.find_next("span").get_text().strip()
-                for x in offer.select(f'div[class^="{TECHNOLOGIES_LIST_CLASS}"]')
+                x.get_text().strip()
+                for x in offer.select(f'span[class^="{TECHNOLOGIES_LIST_CLASS}"]')
             ]
             self.link = "https://nofluffjobs.com" + offer["href"].strip()
             self.calculateAndAssignHash()
         except Exception as e:
-            print(f"Failed to add new offer {e}")
+            print(f"Failed to add new offer. {e}")
 
 
 def runNoFluffJobs():
@@ -47,9 +49,11 @@ def runNoFluffJobs():
 
     url = str(environ.get("NOFLUFFJOBS_URL"))
     response = fetchWebsite(session, url)
-    parsedResponse = returnBeautifulSoupedHTML(response.content)
+    parsedResponse = returnBeautifulSoupedHTML(response)
     twoOffersLists = parsedResponse.select(f'div[class^="{ALL_OFFERS_CLASS}"]')
-    offers = [y for x in twoOffersLists for y in x.find_all_next("a")]
+    offers = [
+        y for x in twoOffersLists for y in x.find_all_next("a") if y.find_next("h3")
+    ]
 
     Thread(
         target=insertNewOffersFromList,
@@ -64,6 +68,8 @@ def insertNewOffersFromList(offers, db):
     offersList = []
     for offer in offers:
         newOffer = NoFluffJobsOffer(offer)
+        if not newOffer:
+            continue
         offersList.append(newOffer)
     multipleLastRow = db.insertMultipleOffers(offersList)
 

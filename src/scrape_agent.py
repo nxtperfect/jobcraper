@@ -55,7 +55,7 @@ def fetchWebsite(session: Session, url: str):
         )
         page = chrome.new_page()
         page.goto(url)
-        page.wait_for_timeout(2000)
+        page.wait_for_timeout(5000)
         content = page.content()
         return content
     # response = session.get(url)
