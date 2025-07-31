@@ -44,13 +44,22 @@ def updateSessionUserAgentAndProxy(session: Session):
 
 
 def fetchWebsite(session: Session, url: str):
-    # nest_asyncio.apply()
-    # pw = sync_playwright.start()
-    # chrome = pw.chromium.launch(headless=True)
-    # page = chrome.new_page()
-    # page.goto("https://twitch.tv")
-    response = session.get(url)
-    return response
+    with sync_playwright() as p:
+        nest_asyncio.apply()
+        chrome = p.chromium.launch(headless=True)
+        context = chrome.new_context(
+            user_agent=session.headers.get("USER_AGENT"),
+            proxy={"server": session.proxies.get("http")},
+            viewport={"width": 1920, "height": 1080},
+            java_script_enabled=True,
+        )
+        page = chrome.new_page()
+        page.goto(url)
+        page.wait_for_timeout(2000)
+        content = page.content()
+        return content
+    # response = session.get(url)
+    # return response
 
 
 def returnBeautifulSoupedHTML(pageContent: str):

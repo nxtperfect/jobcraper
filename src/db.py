@@ -1,12 +1,13 @@
 import sqlite3
 from os import environ
 from typing import LiteralString
-from dotenv import load_dotenv 
+from dotenv import load_dotenv
 import hashlib
 
 from src.scrape_agent import TECHNOLOGIES
 
 load_dotenv()
+
 
 class Offer:
     def __init__(self, offer) -> None:
@@ -20,14 +21,34 @@ class Offer:
         self.link: str = ""
 
     def calculateAndAssignHash(self) -> None:
-        hash_str = ' '.join([self.title, self.by_company, self.city])
+        hash_str = " ".join([self.title, self.by_company, self.city])
         md5 = hashlib.md5()
         md5.update(bytes(hash_str, encoding="utf-8"))
         self.hashId = str(md5.hexdigest())
 
-    def formatToDatabase(self) -> tuple[str, str, str, str, str, LiteralString, LiteralString, str, float, str, str]:
-        matching = (len([x for x in self.technologies if x in TECHNOLOGIES]) / float(len(self.technologies) if self.technologies else 1)) * 100
-        return (self.hashId, self.title, self.last_seen, self.by_company, self.city, ','.join(self.additional_info), ','.join(self.technologies), self.link, matching, "false", self.last_seen)
+    def formatToDatabase(
+        self,
+    ) -> tuple[
+        str, str, str, str, str, LiteralString, LiteralString, str, float, str, str
+    ]:
+        matching = (
+            len([x for x in self.technologies if x in TECHNOLOGIES])
+            / float(len(self.technologies) if self.technologies else 1)
+        ) * 100
+        return (
+            self.hashId,
+            self.title,
+            self.last_seen,
+            self.by_company,
+            self.city,
+            ",".join(self.additional_info),
+            ",".join(self.technologies),
+            self.link,
+            matching,
+            "false",
+            self.last_seen,
+        )
+
 
 CREATE_TABLE_STATEMENT = """
                         CREATE TABLE IF NOT EXISTS offers (
@@ -43,9 +64,13 @@ CREATE_TABLE_STATEMENT = """
                             is_applied text DEFAULT "false"
                         );"""
 
+
 class Database:
     def connect(self):
-        self.conn = sqlite3.connect(str(environ.get("DATABASE_PATH")), check_same_thread=False, timeout=3)
+        self.conn = sqlite3.connect(
+            str(environ.get("DATABASE_PATH")), check_same_thread=False, timeout=3
+        )
+
     def __init__(self):
         self.connect()
         # self.removeOffersTable()
@@ -66,7 +91,7 @@ class Database:
         ON CONFLICT(id) DO UPDATE SET last_seen=?;
         """
         self.connect()
-        formatedOffers = [x.formatToDatabase() for x in offers]
+        formatedOffers = [x.formatToDatabase() for x in offers if x]
         try:
             with self.conn:
                 cursor = self.conn.cursor()
