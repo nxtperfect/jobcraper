@@ -35,9 +35,15 @@ class PracujOffer(Offer):
             self.last_seen = getCurrentTime()
             self.title = offer.find_next("h2").get_text().strip()
             self.by_company = offer.find_next(class_="tiles_c639tii").get_text().strip()
+            if "Sprawdź profil firmy" in self.by_company:
+                self.by_company = self.by_company.removesuffix("Sprawdź profil firmy")
             self.city = (
                 offer.select('h4[data-test="text-region"]')[0].get_text().strip()
             )
+            if "Miejsce pracy:" in self.city:
+                self.city = self.city.removeprefix("Miejsce pracy:")
+            if "Siedziba firmy:" in self.city:
+                self.city = self.city.split("Siedziba firmy:")[0]
             self.additional_info = [
                 x.get_text().strip()
                 for x in offer.select("li[data-test^=offer-additional-info-]")
@@ -79,8 +85,7 @@ def runPracuj():
 def getMaxPages(session):
     url = str(environ.get("PRACUJ_URL"))
     response = fetchWebsite(session, url)
-    parsedResponse = returnBeautifulSoupedHTML(response.content)
-    print(parsedResponse.select(f"span"))
+    parsedResponse = returnBeautifulSoupedHTML(response)
     max_pages = parsedResponse.select(f"span[data-test={PAGINATION_MAX_OFFER_NUMBER}]")[
         0
     ].get_text()
@@ -97,13 +102,14 @@ def insertNewOffersFromList(session, db, i):
     except Exception as e:
         print(f"Couldn't fetch url {url} with session {session}", e)
         return
-    parsedResponse = returnBeautifulSoupedHTML(response.content)
+    parsedResponse = returnBeautifulSoupedHTML(response)
     offers = parsedResponse.find_all(class_=OFFER_CLASS)
-    offersList = []
+    offersList: list[PracujOffer] = [0] * len(offers)
     for i, offer in enumerate(offers[:-1]):
         newOffer = PracujOffer(offer)
-        offersList.append(newOffer)
-        print(f"Got new offers {offersList}")
+        if not newOffer:
+            continue
+        offersList[i] = newOffer
     multipleLastRow = db.insertMultipleOffers(offersList)
 
 

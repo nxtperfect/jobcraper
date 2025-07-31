@@ -65,7 +65,7 @@ def runBulldogJob():
 
     url = str(environ.get("BULLDOGJOB_URL"))
     response = fetchWebsite(session, url)
-    parsedResponse = returnBeautifulSoupedHTML(response.content)
+    parsedResponse = returnBeautifulSoupedHTML(response)
     containerDivs = parsedResponse.select(f'div[class^="{CONTAINER_CLASS}"]')
     offers = containerDivs[0].select(f'div[class="{OFFERS_CLASS}"]')[0].find_all("a")
 
